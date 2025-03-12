@@ -3,9 +3,10 @@ dotenv.config();
 import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { UserModel } from "./db";
+import { UserModel, ContentModel } from "./db";
 import { connectDB } from "./db";
 connectDB();
+import { userAuth } from "./middleware";
 
 const app = express();
 
@@ -73,11 +74,105 @@ app.post("/api/v1/login", async (req, res) => {
   });
 });
 
-app.post("/api/v1/content", (req, res) => {});
 
-app.get("/api/v1/content", (req, res) => {});
+app.post("/api/v1/content", userAuth, async (req, res) => {
 
-app.delete("/api/v1/content", (req, res) => {});
+  try {
+
+    const { title, link, type, tags } = req.body;
+
+    if (!title || !link) {
+      res.status(400).send("Fill title and link");
+      return;
+    }
+
+    const content = await ContentModel.create({
+      title,
+      link,
+      type,
+      tags,
+      // @ts-ignore
+      userid: req.userid
+    })
+
+    res.status(200).json({
+      success: true,
+      message: "Content created",
+      content
+    })
+
+  } catch (e) {
+
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+      error: e
+    })
+
+  }
+
+});
+
+app.get("/api/v1/content", userAuth, async (req, res) => {
+
+  try {
+
+    // @ts-ignore
+    const userid = req.userid;
+  
+    // console.log(userid);
+
+    // populate
+    // suppose on the frontend you want to show the username of the user who created the content, so populating the user id with the username so both come along.
+    const contents = await ContentModel.find({userid}).populate("userid", "username");
+
+    // console.log(contents);
+    if (!contents) {
+      res.status(400).send("No contents found");
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Contents fetched",
+      contents
+    })
+
+  } catch (e){
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+      error: e
+    })
+  }
+
+});
+
+app.delete("/api/v1/content", userAuth, async (req, res) => {
+  try {
+
+    const contentId = req.body.contentId;
+
+    if (!contentId) {
+      res.status(400).send("Content id missing");
+      return;
+    }
+
+    // the person should own the content they want to delete
+    await ContentModel.deleteMany({
+      contentId,
+      // @ts-ignore
+      userid: req.userid
+    })
+
+  } catch (e) {
+    res.status(500).json({
+      success: false,
+      message: "Cant delete, something went wrong",
+      error: e
+    })
+  }
+});
 
 app.post("/api/v1/brain/share", (req, res) => {});
 

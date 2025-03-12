@@ -39,17 +39,58 @@ const userSchema = new mongoose.Schema({
 export const UserModel = mongoose.model('User', userSchema)
 
 
-const contentModel = new mongoose.Schema({
+const contentSchema = new mongoose.Schema({
   title: {
-
+    type: String,
+    required: true
   },
   link: {
-
+    type: String,
+    required: true
   },
-  userId: {
-
+  type: {
+    type: String,
+    enum: ['Youtube', 'X', 'Articles', 'Others'],
+    default: 'Others',
   },
-  tags: {
-
+  //impt
+  tags: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Tag'
+  }],
+  // impt
+  userid: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   }
 })
+
+export const ContentModel = mongoose.model('Content', contentSchema);
+
+
+const tagSchema = new mongoose.Schema({
+  title:{
+    type: String,
+    required: true
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
+})
+
+export const TagModel = mongoose.model('Tag', tagSchema);
+
+const linkSchema = new mongoose.Schema({
+  url: {
+    type: String,
+    required: true
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
+})
+
+export const LinkModel = mongoose.model('Link', linkSchema);
