@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
+import { Request } from "express";
+import cors from "cors";
 import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -12,6 +14,7 @@ import { userAuth } from "./middleware";
 const app = express();
 
 app.use(express.json());
+app.use(cors<Request>());
 
 // all routes
 
