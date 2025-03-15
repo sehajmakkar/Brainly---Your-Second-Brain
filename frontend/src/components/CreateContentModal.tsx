@@ -128,7 +128,7 @@ export function CreateContentModal({ open, onClose, onSuccess }: CreateContentMo
             </select>
           </div>
           
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium mb-1">Tags</label>
             <div className="flex">
               <input 
@@ -162,7 +162,7 @@ export function CreateContentModal({ open, onClose, onSuccess }: CreateContentMo
                 ))}
               </div>
             )}
-          </div>
+          </div> */}
         </div>
         
         <div className="mt-6 flex justify-end space-x-3">

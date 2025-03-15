@@ -16,20 +16,20 @@ interface JwtPayload {
 export const userAuth = (req: Request, res: Response, next: NextFunction) => {
   const token = req.headers.authorization;
   if (!token) {
-    res.status(401).send("Unauthorized");
+    res.status(401).send("Unauthorized token");
     return;
   }
 
   const {userid} = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
   if (!userid) {
-    res.status(401).send("Unauthorized");
+    res.status(401).send("Unauthorized userid");
     return;
   }
 
   // decodedToken.userid
   const user = UserModel.findById(userid);
   if (!user) {
-    res.status(401).send("Unauthorized");
+    res.status(401).send("Unauthorized userr");
     return;
   }
 

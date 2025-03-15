@@ -12,15 +12,18 @@ export default function LoginPage() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const response = axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/login`, {
+    // @ts-ignore
+    const {data} = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/login`, {
       username, password
     })
 
+    // console.log(data);
+
     // @ts-ignore
-    // localStorage.setItem("token", response.data.token);
+    localStorage.setItem("token", data.token);
 
     // alert("Login successful!");
     navigate("/");
