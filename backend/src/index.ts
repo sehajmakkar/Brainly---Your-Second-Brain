@@ -230,6 +230,7 @@ app.post("/api/v1/brain/share", userAuth, async (req, res) => {
         message: "Link updated",
         link: "/share/" + hash,
       });
+      
     } else {
       await LinkModel.deleteOne({
         // @ts-ignore

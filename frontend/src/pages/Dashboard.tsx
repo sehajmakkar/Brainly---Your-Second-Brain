@@ -15,6 +15,29 @@ function Dashboard() {
   const [modalOpen, setModalOpen] = useState(true);
   const [contents, setContents] = useState([]);
 
+  const handleShare = async () => {
+    try{
+
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/brain/share`,{
+        share: true
+      }, {
+        headers: {
+          "Authorization": localStorage.getItem("token")
+        }
+      })
+
+      // @ts-ignore
+      const url = `http://localhost:4000/brain${response.data.link}`
+
+      // copy to clipboard
+      navigator.clipboard.writeText(url);
+      alert("Link copied to clipboard!");
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const fetchContents = async () => {
     const response = await axios.get(
       `${import.meta.env.VITE_BACKEND_URL}/api/v1/content`,
@@ -64,7 +87,9 @@ function Dashboard() {
             </h1>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="secondary" text="Share Brain" icon={<Share />} />
+            <Button variant="secondary" text="Share Brain" icon={<Share />}
+            onClick={handleShare}
+            />
             <Button
               variant="primary"
               text="Add Content"
